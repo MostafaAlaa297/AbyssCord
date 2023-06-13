@@ -9,8 +9,10 @@ const {Room} = require('./model')
 const session = require('express-session')
 const passport = require('passport')
 const passportLocalMongoose = require('passport-local-mongoose')
-var LocalStrategy = require('passport-local').Strategy;
+//var LocalStrategy = require('passport-local').Strategy;
 
+let MemberName;
+let MemberId;
 
 require("dotenv").config()
 
@@ -29,7 +31,8 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-passport.use(new LocalStrategy(User.authenticate()));
+//passport.use(new LocalStrategy(User.authenticate()));
+passport.use(User.createStrategy());
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -47,7 +50,8 @@ app.get('/login',function(req, res){
     res.render('Login')
 })
 app.get('/lobby',function(req, res){
-    if(req.isAuthenticated()){  
+    if(req.isAuthenticated()){
+
     console.log("we are authenticated");  
     res.render('lobby')
     }
@@ -55,24 +59,35 @@ app.get('/lobby',function(req, res){
     res.redirect('/login')
     }
 })
-app.get('/room',function(req, res){
-    res.render('room')
-})
 
 app.get('/room/:roomId', function(req, res){
-    const requestedRoomId = req.params.roomId
+    if(req.isAuthenticated()){
+        const memberEmail = req.session.passport.user
+        User.findOne({username: memberEmail}).then(user => {
+        MemberName = user.name
+        MemberId = user._id
+        console.log(MemberName + '\t' + MemberId);
+    })
 
-    Room.findOne({_id: requestedRoomId}).then(room =>{
-        if(room)
-        {
-            res.render('room', {
-                roomName: room.name
-            })
+    
+        const requestedRoomId = req.params.roomId
+    
+        console.log("we are authenticated");  
+        Room.findOne({_id: requestedRoomId}).then(room =>{
+            if(room)
+            {
+                res.render('room', {
+                    roomName: room.name
+                })  
+            }
+            else{
+                res.send(`<script>alert("There is no such room!"); window.location.href = "/lobby";</script>`);
+            }
+        }) 
         }
         else{
-            res.send(`<script>alert("There is no such room!"); window.location.href = "/lobby";</script>`);
+        res.redirect('/login')
         }
-    }) 
 
 })
 
@@ -168,6 +183,11 @@ app.post("/join_room", function(req, res) {
     const requestedRoomId = req.body.id;
     console.log(requestedRoomId);
     res.redirect(`room/${requestedRoomId}`)
+})
+
+app.get("/data", function(req, res){
+    const data = {memberName: MemberName, memberId:MemberId}
+    res.json(data)
 })
 
 const port = process.env.PORT || 3001

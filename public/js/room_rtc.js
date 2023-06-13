@@ -1,8 +1,17 @@
+let displayName;
+let uid;
 //const AgoraRTC_N4172 = require("./AgoraRTC_N-4.17.2");
-
 const APP_ID = "51addefbb925457a9c14b53163a4afb8";
 
-let uid = sessionStorage.getItem('uid');
+fetch("/data")
+.then(response => response.json())
+.then(data =>{
+    uid = data.memberId
+    displayName = data.memberName
+    console.log("uid:" + uid +"Name:" + displayName )
+    // console.log(data);}
+})
+
 if(!uid){
     uid = String(Math.floor(Math.random() * 10000))
     sessionStorage.setItem('uid', uid);
@@ -21,7 +30,6 @@ if(!roomId){
     roomId = 'main'
 }
 
-let displayName = sessionStorage.getItem('display_name')
 if(!displayName){
     window.location - 'lobby.html'
 }
