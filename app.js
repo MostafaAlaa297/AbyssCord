@@ -4,8 +4,6 @@ const bodyParser = require ('body-parser')
 const ejs = require('ejs')
 const {User} = require('./model')
 const {Room} = require('./model')
-// const bcrypt = require('bcrypt')
-// const saltRounds = 10
 const session = require('express-session')
 const passport = require('passport')
 const passportLocalMongoose = require('passport-local-mongoose')
@@ -31,8 +29,6 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-// passport.use(new LocalStrategy(User.authenticate()));
-//passport.use(User.createStrategy());
 passport.use(new LocalStrategy({
     usernameField: 'email',
   }, User.authenticate()));
@@ -52,9 +48,6 @@ app.get(/^\/$|\/register/,function(req, res){
         res.render('Registeration')
     }
 })
-// app.get('/register',function(req, res){
-//     res.render('Registeration')
-// })
 app.get('/login',function(req, res){
     res.render('Login')
 })
@@ -120,35 +113,6 @@ app.post("/register", function(req, res) {
         username: req.body.email,
     });
     
-    // User.register(userData, req.body.password,function(err, user)
-    // User.register({username: newEmail}, req.body.password,function(err, user)
-    // {
-    //     if(err)
-    //     {
-    //         console.log(err)
-    //         res.redirect('/register')
-    //     }
-    //     else{
-    //         console.log("user registered");
-    //         passport.authenticate('local',{ failureRedirect: '/lobby' })(req, res, function(err){
-    //             console.log("ma4e");
-    //             res.redirect("/lobby")
-    //         })
-    //     }
-    // })
-
-    // User.findOne({email: newEmail}).then(user => {
-    // if(user){
-    //     res.send(`<script>alert("User already exists!"); window.location.href = "/login";</script>`);
-    // }else {
-        // bcrypt.hash(newPassword, saltRounds, function(err, hash) {
-        //     userData.save()
-        //     .then(result => console.log(result))
-        //     .catch(err => console.error(err));
-            
-        //     res.redirect('/login')
-        // });
-        // }}).catch(err => console.error(err))
         
         User.register(newUser, req.body.password, function(err, user) {
             if (err) {
@@ -180,23 +144,7 @@ app.post("/login", function(req, res) {
             })
         }
     })
-
-    // User.findOne({email: email}).then(user => {
-    // if(user){
-    //     bcrypt.compare(password, user.password, function(err, result) {
-    //         if(result){
-    //         res.redirect('/lobby')
-    //         console.log(user);
-    //         }
-    //         else{
-    //             res.send(`<script>alert("Wrong Email or Password, please try again!"); window.location.href = "/login";</script>`);
-    //         }
-    //     });        
-    // }else {
-    //     res.send(`<script>alert("This Email isn't registered!"); window.location.href = "/login";</script>`);
-       // res.redirect("/login")
-    // }}).catch(err => console.error(err))
-        
+      
 })
 
 app.post('/lobby', function(req, res){
