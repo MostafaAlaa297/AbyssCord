@@ -9,7 +9,7 @@ const {Room} = require('./model')
 const session = require('express-session')
 const passport = require('passport')
 const passportLocalMongoose = require('passport-local-mongoose')
-//var LocalStrategy = require('passport-local').Strategy;
+LocalStrategy = require('passport-local').Strategy;
 
 let MemberName;
 let MemberId;
@@ -31,8 +31,11 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-//passport.use(new LocalStrategy(User.authenticate()));
-passport.use(User.createStrategy());
+// passport.use(new LocalStrategy(User.authenticate()));
+//passport.use(User.createStrategy());
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+  }, User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -40,8 +43,14 @@ passport.deserializeUser(User.deserializeUser());
 mongoose.connect(process.env.MONGO_URI)
 .then(console.log("connected to the Abysss Hallows"))
 
-app.get(/^\/$|\/register/g,function(req, res){
-    res.render('Registeration')
+app.get(/^\/$|\/register/,function(req, res){
+    if(req.isAuthenticated()){
+        console.log("we are authenticated");  
+        res.redirect('/lobby')
+    }
+    else{
+        res.render('Registeration')
+    }
 })
 // app.get('/register',function(req, res){
 //     res.render('Registeration')
@@ -49,6 +58,16 @@ app.get(/^\/$|\/register/g,function(req, res){
 app.get('/login',function(req, res){
     res.render('Login')
 })
+
+app.get("/logout", function(req, res, next) {
+    req.logout(function(err){
+        if(err) {
+            return next(err);
+        }
+        res.redirect("/");
+    });
+})
+
 app.get('/lobby',function(req, res){
     if(req.isAuthenticated()){
 
@@ -96,26 +115,27 @@ app.post("/register", function(req, res) {
     const newName = req.body.name
     const newEmail = req.body.email
 
-    const userData = {
-        name: newName,
-        username: newEmail,
-    };
+    const newUser = new User({
+        name: req.body.name,
+        username: req.body.email,
+    });
     
-    User.register(new User(userData), req.body.password,function(err, user)
-    {
-        if(err)
-        {
-            console.log(err)
-            res.redirect('/register')
-        }
-        else{
-            console.log("user registered");
-            passport.authenticate('local',{ failureRedirect: '/lobby' })(req, res, function(err){
-                console.log("ma4e");
-                res.redirect("/lobby")
-            })
-        }
-    })
+    // User.register(userData, req.body.password,function(err, user)
+    // User.register({username: newEmail}, req.body.password,function(err, user)
+    // {
+    //     if(err)
+    //     {
+    //         console.log(err)
+    //         res.redirect('/register')
+    //     }
+    //     else{
+    //         console.log("user registered");
+    //         passport.authenticate('local',{ failureRedirect: '/lobby' })(req, res, function(err){
+    //             console.log("ma4e");
+    //             res.redirect("/lobby")
+    //         })
+    //     }
+    // })
 
     // User.findOne({email: newEmail}).then(user => {
     // if(user){
@@ -128,9 +148,20 @@ app.post("/register", function(req, res) {
             
         //     res.redirect('/login')
         // });
-    // }}).catch(err => console.error(err))
+        // }}).catch(err => console.error(err))
         
+        User.register(newUser, req.body.password, function(err, user) {
+            if (err) {
+              console.log(err);
+              res.redirect("/register");
+            } else {
+              passport.authenticate("local")(req, res, function() {
+                res.redirect("/lobby");
+              });
+            }
+          }); 
 })
+
 app.post("/login", function(req, res) {
     console.log(" we are at login")
     const user = new User({
@@ -140,10 +171,11 @@ app.post("/login", function(req, res) {
 
     req.login(user, function(err){
         if (err){
+            console.log(err);
             res.redirect('/login')
         }
         else {
-            passport.authenticate("local", { failureRedirect: '/lobby' })(req, res, function(){
+            passport.authenticate("local")(req, res, function(){
                 res.redirect("/lobby")
             })
         }
