@@ -11,7 +11,7 @@
 ![Cover](/AbyssCord/Covers/GitHub-Cover.jpg)
 AbyssCord is an Online chat rooms application, where you connect and communicate with other people.
 ## Technology
-HTML, Css, javascript ES6, DOM, Agora, Passport.js, MongoDB.
+HTML, CSS, JavaScript ES6, DOM, Agora, Passport.js, MongoDB.
 ## Description
 In AbyssCord once you register, you will be able to Create a room, invite people to these rooms, knows who is in the room with you, start a real-time chat with them, join stream and start a voice / video call, share your screen to everyone on stream.
 
