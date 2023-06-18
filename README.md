@@ -34,7 +34,7 @@ Also we are using MongoDB and Passport.js to store and authenticate users.
 
 ![Cover](/AbyssCord/Screenshots/Room.png)
 
-**4-Stream**
+**4- Stream**
 
 ![Cover](/AbyssCord/Screenshots/Stream.png)
 ## Notes
