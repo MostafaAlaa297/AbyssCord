@@ -13,14 +13,11 @@ AbyssCord is an Online chat rooms application, where you connect and communicate
 ## Technology
 HTML, Css, javascript ES6, DOM, Agora, Passport.js, MongoDB.
 ## Description
-in AbyssCord once you register ,you will be able to Create a room ,invite people to these rooms,
-, knows who is in the room with you, start a real-time chat with them, join stream and start a
-voice / video call, share your screen to everyone on stream.
+In AbyssCord once you register, you will be able to Create a room, invite people to these rooms, knows who is in the room with you, start a real-time chat with them, join stream and start a voice / video call, share your screen to everyone on stream.
 
-The website is using Agora RTM to handle creating and joining the rooms and Agora RTC to handle The
-communication between the users using DOM.
+The website is using Agora RTM to handle creating and joining the rooms and Agora RTC to handle The communication between the users using DOM.
 
-Also we are using MongoDB and Passport.js to store and authenticate users.
+Also, we are using MongoDB and Passport.js to store and authenticate users.
 ## Snippets
 **1- Login**
 
