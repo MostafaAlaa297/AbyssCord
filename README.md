@@ -22,19 +22,19 @@ communication between the users using DOM.
 
 Also we are using MongoDB and Passport.js to store and authenticate users.
 ## Snippets
-#1-Login
+**1- Login**
 
 ![Cover](/AbyssCord/Screenshots/Login.png)
 
-#2-Register
+**2- Register**
 
 ![Cover](/AbyssCord/Screenshots/Register.png)
 
-#3-Room
+**3- Room**
 
 ![Cover](/AbyssCord/Screenshots/Room.png)
 
-#4-Stream
+**4-Stream**
 
 ![Cover](/AbyssCord/Screenshots/Stream.png)
 ## Notes
